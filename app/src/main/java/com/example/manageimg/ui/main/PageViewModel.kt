@@ -1,41 +1,45 @@
 package com.example.manageimg.ui.main
 
+import android.app.Application
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.file.Files
 
-class PageViewModel : ViewModel() {
+class PageViewModel(val applicationContext: Context) : ViewModel() {
+    var _fileList = MutableLiveData<MutableList<String>>()
 
-//    private val _index = MutableLiveData<Int>()
-//    val text: LiveData<String> = Transformations.map(_index) {
-//        "Hello world from section: $it"
-//    }
-//
-//    fun setIndex(index: Int) {
-//        _index.value = index
-//    }
-//
-//    @RequiresApi(Build.VERSION_CODES.R)
-//    fun fetchImages(directory:File):MutableList<File>{
-//        var images = mutableListOf<File>()
-//        var files= directory.listFiles()
-//        for(i in files!!.indices){
-//            if(files[i].isDirectory) {
-//                images.addAll(fetchImages(files[i]))
-//            }else{
-//                if(files[i].name.endsWith(".JPG")){
-//                    images.add(files[i])
-//                }
-//            }
-//        }
-//        return images
-//
-//    }
+    var cols = listOf<String>(MediaStore.Images.Media.DATA).toTypedArray()
+
+    var rs = applicationContext.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,cols,null,null,null)
+
+    init {
+    viewModelScope.launch(Dispatchers.Main) {
+        getFileList()
+    }
+
+    }
+  suspend fun getFileList() {
+      _fileList.value = mutableListOf<String>()
+
+                if(rs?.moveToNext()!!) {
+                    _fileList.value?.add(rs!!.getString(0))
+                    while (rs!!.moveToNext()){
+                        _fileList.value?.add(rs!!.getString(0))
+            Log.d("list", _fileList.value?.size.toString())
+                    }
+
+                }
+
+
+
+}
 }
