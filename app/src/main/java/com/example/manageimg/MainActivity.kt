@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.manageimg.IMGDatabase.RoomFileLocationDataBase
 import com.example.manageimg.ui.main.PageViewModel
 import com.example.manageimg.ui.main.PageViewModelFactory
 import com.example.manageimg.ui.main.ShowImagesAdapter
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity() {
 
         val viewModelFactory = PageViewModelFactory(applicationContext)
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(PageViewModel::class.java)
+        val fileLocationDataBase = RoomFileLocationDataBase.getDatabase(context = applicationContext)
+        val fileLocationDao  = fileLocationDataBase.getdDao()
+
         val adapter = ShowImagesAdapter()
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.adapter = adapter

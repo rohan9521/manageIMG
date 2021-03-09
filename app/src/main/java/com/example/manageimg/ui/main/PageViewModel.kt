@@ -9,12 +9,13 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
+import com.example.manageimg.IMGDatabase.FileLocationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.file.Files
 
-class PageViewModel(val applicationContext: Context) : ViewModel() {
+class PageViewModel(val applicationContext: Context,val fileLocationRepository:FileLocationRepository) : ViewModel() {
     var _fileList = MutableLiveData<MutableList<String>>()
 
     var cols = listOf<String>(MediaStore.Images.Media.DATA).toTypedArray()
@@ -25,6 +26,9 @@ class PageViewModel(val applicationContext: Context) : ViewModel() {
     viewModelScope.launch(Dispatchers.Main) {
         getFileList()
     }
+
+    }
+    suspend fun insertImageLocation(){
 
     }
   suspend fun getFileList() {
