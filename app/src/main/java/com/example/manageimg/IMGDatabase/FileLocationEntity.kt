@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "FileLocationTable")
 class FileLocationEntity {
     @PrimaryKey
-    val location:String = ""
+    var location:String = ""
 }

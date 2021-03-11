@@ -1,43 +1,50 @@
 package com.example.manageimg.ui.main
 
-import android.app.Application
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
+import com.example.manageimg.IMGDatabase.FileLocationEntity
 import com.example.manageimg.IMGDatabase.FileLocationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
-import java.nio.file.Files
+import kotlinx.coroutines.withContext
 
 class PageViewModel(val applicationContext: Context,val fileLocationRepository:FileLocationRepository) : ViewModel() {
-    var _fileList = MutableLiveData<MutableList<String>>()
-
+    var _fileList = MutableLiveData<MutableList<FileLocationEntity>>()
+    lateinit var fileList:LiveData<List<FileLocationEntity>>
     var cols = listOf<String>(MediaStore.Images.Media.DATA).toTypedArray()
 
     var rs = applicationContext.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,cols,null,null,null)
 
     init {
+        fetchFileLocation()
     viewModelScope.launch(Dispatchers.Main) {
         getFileList()
+
     }
 
     }
-    suspend fun insertImageLocation(){
-
+    fun fetchFileLocation() = viewModelScope.launch(Dispatchers.IO) {
+        fileList = fileLocationRepository.fileLocationDao.getAllImageLocation()
     }
+
   suspend fun getFileList() {
-      _fileList.value = mutableListOf<String>()
+
 
                 if(rs?.moveToNext()!!) {
-                    _fileList.value?.add(rs!!.getString(0))
+                    val fileLocationEntityOne = FileLocationEntity()
+                    fileLocationEntityOne.location = rs!!.getString(0)
+                    withContext(Dispatchers.IO){
+                    fileLocationRepository.fileLocationDao.insertAllFileLocation(fileLocationEntityOne)
+                    }
                     while (rs!!.moveToNext()){
-                        _fileList.value?.add(rs!!.getString(0))
+                        val fileLocationEntity = FileLocationEntity()
+                        fileLocationEntity.location = rs!!.getString(0)
+
+                        withContext(Dispatchers.IO){
+                            fileLocationRepository.fileLocationDao.insertAllFileLocation(fileLocationEntity)
+                        }
             Log.d("list", _fileList.value?.size.toString())
                     }
 

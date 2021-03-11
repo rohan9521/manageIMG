@@ -1,6 +1,7 @@
 package com.example.manageimg.IMGDatabase
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,10 +11,10 @@ import androidx.room.Query
 interface FileLocationDao {
 
     @Query("select * from FileLocationTable")
-    fun getAllImageLocation():LiveData<List<String>>
+    fun getAllImageLocation():LiveData<List<FileLocationEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAllFileLocation(vararg fileLocation:FileLocationEntity)
+    fun insertAllFileLocation(fileLocation: FileLocationEntity)
 
 
 }

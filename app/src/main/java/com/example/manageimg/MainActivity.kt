@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.manageimg.IMGDatabase.FileLocationRepository
 import com.example.manageimg.IMGDatabase.RoomFileLocationDataBase
 import com.example.manageimg.ui.main.PageViewModel
 import com.example.manageimg.ui.main.PageViewModelFactory
@@ -39,18 +40,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val viewModelFactory = PageViewModelFactory(applicationContext)
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(PageViewModel::class.java)
         val fileLocationDataBase = RoomFileLocationDataBase.getDatabase(context = applicationContext)
         val fileLocationDao  = fileLocationDataBase.getdDao()
+        val repository = FileLocationRepository(fileLocationDao)
+        val viewModelFactory = PageViewModelFactory(applicationContext,repository)
+        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(PageViewModel::class.java)
 
         val adapter = ShowImagesAdapter()
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        viewModel._fileList.observe(this, Observer { list ->
+        viewModel.fileList.observe(this, Observer { list ->
             run {
                 adapter.list = list
                 Log.d("newList",list.size.toString())
