@@ -13,9 +13,9 @@ import kotlinx.coroutines.withContext
 class PageViewModel(val applicationContext: Context,val fileLocationRepository:FileLocationRepository) : ViewModel() {
     var _fileList = MutableLiveData<MutableList<FileLocationEntity>>()
     lateinit var fileList:LiveData<List<FileLocationEntity>>
-    var cols = listOf<String>(MediaStore.Images.Media.DATA).toTypedArray()
-
-    var rs = applicationContext.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,cols,null,null,null)
+    var cols = listOf<String>(MediaStore.Images.Media.DATA,MediaStore.Images.Media.DATE_MODIFIED).toTypedArray()
+    val orderBy = MediaStore.Images.Media.DATE_MODIFIED
+    var rs = applicationContext.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,cols,null,null,orderBy)
 
     init {
         fetchFileLocation()

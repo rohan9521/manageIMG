@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.fileList.observe(this, Observer { list ->
             run {
-                adapter.list = list
+                adapter.submitList(list)
                 Log.d("newList",list.size.toString())
                 adapter.notifyDataSetChanged()
             }
