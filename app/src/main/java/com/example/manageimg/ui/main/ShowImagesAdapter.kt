@@ -11,12 +11,18 @@ import com.bumptech.glide.Glide
 import com.example.manageimg.IMGDatabase.FileLocationEntity
 import com.example.manageimg.R
 import androidx.recyclerview.widget.ListAdapter
-class ShowImagesAdapter: ListAdapter<FileLocationEntity, ShowImagesViewHolder>(DiffUtilCall()) {
+import com.example.manageimg.ui.Fragments.ShowImagesListFragment
+
+class ShowImagesAdapter(val fragment: ShowImagesListFragment): ListAdapter<FileLocationEntity, ShowImagesViewHolder>(DiffUtilCall()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowImagesViewHolder {
         val layoutInflator  = LayoutInflater.from(parent.context)
         val view  = layoutInflator.inflate(R.layout.show_images_view,parent,false)
         val showImagesViewHolder =  ShowImagesViewHolder(view)
+        showImagesViewHolder.imageView.setOnClickListener(){
+            fragment.onClick(currentList[showImagesViewHolder.adapterPosition].location)
+        }
+
         return  showImagesViewHolder
     }
 
@@ -47,4 +53,7 @@ class DiffUtilCall: DiffUtil.ItemCallback<FileLocationEntity>() {
         return oldItem.location == newItem.location
     }
 
+}
+public interface ClickListener{
+    fun onClick(pos:String)
 }

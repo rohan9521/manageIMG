@@ -31,7 +31,7 @@ class PageViewModel(val applicationContext: Context,val fileLocationRepository:F
 
   suspend fun getFileList() {
 
-
+        Log.d("enter123","clicked")
                 if(rs?.moveToNext()!!) {
                     val fileLocationEntityOne = FileLocationEntity()
                     fileLocationEntityOne.location = rs!!.getString(0)
